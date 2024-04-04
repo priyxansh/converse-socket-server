@@ -1,14 +1,35 @@
 import express from "express";
+import { createServer } from "http";
+import { Server } from "socket.io";
+import dotenv from "dotenv";
 
-// Initialize the app
+// Load environment variables
+dotenv.config();
+const { NODE_ENV, PORT, PROD_DOMAIN, DEV_DOMAIN } = process.env;
+
+// Initialize the server with socket.io
 const app = express();
+const server = createServer(app);
+const io = new Server(server, {
+  cors: {
+    origin: NODE_ENV === "production" ? PROD_DOMAIN : DEV_DOMAIN,
+  },
+});
 
-// Create a basic test route
+// Define basic test route
 app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
+// Listen for incoming socket connections
+io.on("connection", (socket) => {
+  console.log(`User connected with id: ${socket.id}`);
+  socket.on("disconnect", () => {
+    console.log(`User disconnected with id: ${socket.id}`);
+  });
+});
+
 // Start the server
-app.listen(3000, () => {
-  console.log("Server is running on http://localhost:3000");
+server.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });

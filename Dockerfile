@@ -33,11 +33,11 @@ RUN pnpm install
 # Copy the source code to the working directory
 COPY . .
 
-# Expose the port
-EXPOSE 3000
-
 # Build the application
 RUN pnpm run build
+
+# Expose the port
+EXPOSE 3000
 
 # Start the application
 CMD ["pnpm", "start"]
