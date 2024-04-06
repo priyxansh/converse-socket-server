@@ -2,6 +2,9 @@ import express from "express";
 import { createServer } from "http";
 import { Server } from "socket.io";
 import dotenv from "dotenv";
+import cors from "cors";
+import { joinRoomController } from "./socket-controllers/joinRoomController";
+import { sendFriendRequestController } from "./socket-controllers/sendFriendRequestController";
 
 // Load environment variables
 dotenv.config();
@@ -9,7 +12,15 @@ const { NODE_ENV, PORT, PROD_DOMAIN, DEV_DOMAIN } = process.env;
 
 // Initialize the server with socket.io
 const app = express();
+
+app.use(
+  cors({
+    origin: NODE_ENV === "production" ? PROD_DOMAIN : DEV_DOMAIN,
+  })
+);
+
 const server = createServer(app);
+
 const io = new Server(server, {
   cors: {
     origin: NODE_ENV === "production" ? PROD_DOMAIN : DEV_DOMAIN,
@@ -18,15 +29,13 @@ const io = new Server(server, {
 
 // Define basic test route
 app.get("/", (req, res) => {
-  res.send("Hello World!");
+  res.json({ message: "Hello World!" });
 });
 
-// Listen for incoming socket connections
+// Listen for incoming socket events
 io.on("connection", (socket) => {
-  console.log(`User connected with id: ${socket.id}`);
-  socket.on("disconnect", () => {
-    console.log(`User disconnected with id: ${socket.id}`);
-  });
+  socket.on("join", joinRoomController(socket));
+  socket.on("send_friend_request", sendFriendRequestController(socket));
 });
 
 // Start the server
