@@ -3,9 +3,9 @@ import { createServer } from "http";
 import { Server } from "socket.io";
 import dotenv from "dotenv";
 import cors from "cors";
-import { joinRoomController } from "./socket-controllers/joinRoomController";
-import { sendFriendRequestController } from "./socket-controllers/sendFriendRequestController";
-import { acceptFriendRequestController } from "./socket-controllers/acceptFriendRequestController";
+import { joinRoom } from "./socket-controllers/joinRoom";
+import { sendFriendRequest } from "./socket-controllers/sendFriendRequest";
+import { acceptFriendRequest } from "./socket-controllers/acceptFriendRequest";
 
 // Load environment variables
 dotenv.config();
@@ -35,9 +35,9 @@ app.get("/", (req, res) => {
 
 // Listen for incoming socket events
 io.on("connection", (socket) => {
-  socket.on("join", joinRoomController(socket));
-  socket.on("send_friend_request", sendFriendRequestController(socket));
-  socket.on("accept_friend_request", acceptFriendRequestController(socket));
+  socket.on("join", joinRoom(socket));
+  socket.on("send_friend_request", sendFriendRequest(socket));
+  socket.on("accept_friend_request", acceptFriendRequest(socket));
 });
 
 // Start the server

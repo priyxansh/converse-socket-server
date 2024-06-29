@@ -6,7 +6,7 @@ import { Socket } from "socket.io";
  * @param data - The data object containing sender and receiver information.
  * @returns A function that emits a "receive_friend_request" event to the receiver.
  */
-export const sendFriendRequestController = (socket: Socket) => {
+export const sendFriendRequest = (socket: Socket) => {
   return (data: {
     senderUsername: string;
     senderName: string;
