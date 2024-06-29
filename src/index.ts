@@ -7,6 +7,7 @@ import { joinRoom } from "./socket-controllers/joinRoom";
 import { sendFriendRequest } from "./socket-controllers/sendFriendRequest";
 import { acceptFriendRequest } from "./socket-controllers/acceptFriendRequest";
 import { rejectFriendRequest } from "./socket-controllers/rejectFriendRequest";
+import { removeFriend } from "./socket-controllers/removeFriend";
 
 // Load environment variables
 dotenv.config();
@@ -30,7 +31,7 @@ const io = new Server(server, {
 });
 
 // Define basic test route
-app.get("/", (req, res) => {
+app.get("/", (_, res) => {
   res.json({ message: "Hello World!" });
 });
 
@@ -40,6 +41,7 @@ io.on("connection", (socket) => {
   socket.on("send_friend_request", sendFriendRequest(socket));
   socket.on("accept_friend_request", acceptFriendRequest(socket));
   socket.on("reject_friend_request", rejectFriendRequest(socket));
+  socket.on("remove_friend", removeFriend(socket));
 });
 
 // Start the server
