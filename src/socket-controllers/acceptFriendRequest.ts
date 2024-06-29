@@ -10,10 +10,12 @@ export const acceptFriendRequest = (socket: Socket) => {
     senderUsername: string;
     receiverUsername: string;
     receiverName: string;
+    requestId: string;
   }) => {
     socket.to(data.senderUsername).emit("accept_friend_request", {
       receiverUsername: data.receiverUsername,
       receiverName: data.receiverName,
+      requestId: data.requestId,
     });
   };
 };
