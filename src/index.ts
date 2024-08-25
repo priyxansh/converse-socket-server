@@ -8,6 +8,8 @@ import { sendFriendRequest } from "./socket-controllers/sendFriendRequest";
 import { acceptFriendRequest } from "./socket-controllers/acceptFriendRequest";
 import { rejectFriendRequest } from "./socket-controllers/rejectFriendRequest";
 import { removeFriend } from "./socket-controllers/removeFriend";
+import { leaveRoom } from "./socket-controllers/leaveRoom";
+import { sendMessage } from "./socket-controllers/message/sendMessage";
 
 // Load environment variables
 dotenv.config();
@@ -38,10 +40,14 @@ app.get("/", (_, res) => {
 // Listen for incoming socket events
 io.on("connection", (socket) => {
   socket.on("join", joinRoom(socket));
+  socket.on("leave", leaveRoom(socket));
+
   socket.on("send_friend_request", sendFriendRequest(socket));
   socket.on("accept_friend_request", acceptFriendRequest(socket));
   socket.on("reject_friend_request", rejectFriendRequest(socket));
   socket.on("remove_friend", removeFriend(socket));
+
+  socket.on("message:send", sendMessage(socket));
 });
 
 // Start the server
