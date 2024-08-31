@@ -8,8 +8,16 @@ import { Message } from "../../types/Message";
  * @returns A function that takes a chatId and a message object and emits a "message:receive" event to the specified chat.
  */
 export const sendMessage = (socket: Socket) => {
-  return ({ chatId, message }: { chatId: string; message: Message }) => {
-    socket.to(chatId).emit("message:receive", {
+  return ({
+    chatId,
+    message,
+    recipients,
+  }: {
+    chatId: string;
+    message: Message;
+    recipients: string[];
+  }) => {
+    socket.to([chatId, ...recipients]).emit("message:receive", {
       chatId,
       message,
     });
